@@ -1,0 +1,69 @@
+---
+title: "STAT 350 Final Project - Yan & Leo"
+author: "Abs_orbo"
+date: "10/24/2020"
+output: pdf_document
+---
+Project Information
+```{r}
+# we are assigned Dataset 1 (Cancer)
+# https://data.world/nrippner/cancer-linear-regression-model-tutorial
+
+
+# The	following	sections	must	be	included:
+#    Abstract (150	words	or	less)
+#    Introduction (must	contain	a	thorough	description	of	the	questions	of	interest)
+#    Data	Description (must	contain	data	visualizations	that	are	properly	labelled	and	explained)
+#    Methods (must	contain	a	complete	description	of	all	analysis	tools	used)
+#    Results (all	figures	should	be	properly	labelled	and	discussed)
+#    Conclusion (must	contain	a	concise	discussion	of	what	has	been	learned	about	the	application	from	the	analysis)
+#    Appendix (must	include	all	data	and	R	Markdown	files	for	reproducibility)
+
+
+# BEFORE commencing	your	analysis, you	must	introduce	one	new	additional	data	point into	your	assigned	dataset.	A	description	of	this	unique data	point	must	be	included	in	your	Data	 Description section	along	with	some rationale	for	the	values	chosen.		
+
+
+# Grading	Scheme:
+# 8 Overall	presentation	and	organization	of	materials (includes	quality	of	writing	and	quality	of	
+# the	Github	presentation,	…)
+# 5 Quality	of	data	visualizations
+# 8 Correctness	of	analysis
+# 6 Quality	and	selection	of	relevant	figures	
+# 8 Interpretation	of	results
+```
+
+Abstract (150 words or less)
+```{r}
+
+```
+
+Introduction (must contain a thorough description of the questions of interest)
+```{r}
+
+```
+
+Data Description (must contain data visualizations that are properly labelled and explained)
+```{r}
+
+```
+
+Methods (must contain a complete description of all analysis tools used)
+```{r}
+
+```
+
+Results (all figures should be properly labelled and discussed)
+```{r}
+
+```
+
+Conclusion (must contain a concise discussion of what has been learned about the application from the analysis)
+```{r}
+
+```
+
+Appendix (must include all data and R Markdown files for reproducibility)
+```{r}
+
+```
+
