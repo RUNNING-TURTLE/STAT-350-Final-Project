@@ -32,6 +32,21 @@ Project Information
 # 8 Interpretation	of	results
 ```
 
+```{r "setup", include=FALSE}
+knitr::opts_knit$set(root.dir = "C:\\Users\\LYC\\Desktop\\SFU\\Fall 2020 Courses\\STAT 350\\Final project")
+```
+
+Initialization
+```{r}
+
+```
+Import datasets
+```{r}
+death = read.csv("death.csv")
+incd = read.csv("incd.csv")
+```
+
+
 Abstract (150 words or less)
 ```{r}
 
