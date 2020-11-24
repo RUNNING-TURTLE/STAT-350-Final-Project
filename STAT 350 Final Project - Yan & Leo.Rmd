@@ -101,24 +101,6 @@ X_scaled[,i] = scale(X_scaled[,i])
 
 ```
 
-Data cleaning
-```{r}
-death_incd = merge(death, incd, by.x="FIPS",by.y="FIPS", sort = TRUE)
-
-FIPS = death_incd$FIPS
-County = death_incd$County.x
-age_adj_death_rate = death_incd$Age.Adjusted.Death.Rate
-age_adj_incd_rate = death_incd$Age.Adjusted.Incidence.Rate.Ê....cases.per.100.000
-
-age_adj_death_rate = as.numeric(age_adj_death_rate)
-age_adj_incd_rate = as.numeric(age_adj_incd_rate)
-
-data = cbind(FIPS, County, age_adj_death_rate, age_adj_incd_rate)
-
-na_rows = data[is.na(data),]
-
-```
-
 Abstract (150 words or less)
 ```{r}
 
