@@ -4,6 +4,8 @@ author: "Abs_orbo"
 date: "10/24/2020"
 output: pdf_document
 ---
+Question: Regression analysis on US 2000 death rate
+
 Project Information
 ```{r}
 # we are assigned Dataset 1 (Cancer)
@@ -33,19 +35,89 @@ Project Information
 ```
 
 ```{r "setup", include=FALSE}
-knitr::opts_knit$set(root.dir = "C:\\Users\\LYC\\Desktop\\SFU\\Fall 2020 Courses\\STAT 350\\Final project")
+knitr::opts_knit$set(root.dir = "C:\\Users\\LYC\\Desktop\\SFU\\Fall 2020 Courses\\STAT 350\\Final project\\data")
 ```
 
 Initialization
 ```{r}
 
 ```
+
 Import datasets
 ```{r}
-death = read.csv("death.csv")
-incd = read.csv("incd.csv")
+death_rate = read.csv("death.csv")
+b1_population = read.csv("cc00_tab_B1_area_population.csv")
+b2_pop_by_age_sex_race = read.csv("cc00_tab_B2_pop_by_age_sex_race.csv")
+b4_vital_stat_health = read.csv("cc00_tab_B4_vital_statistics_and_health.csv")
+b5_education_income_poverty = read.csv("cc00_tab_B5_education_income_poverty.csv")
+b6_crime_housing = read.csv("cc00_tab_B6_crime_housing_building_permit.csv")
+b7_labor_employment = read.csv("cc00_tab_B7_labor_force_employment.csv")
+b8_income = read.csv("cc00_tab_B8_personal_income_earnings.csv")
+b13_govt_programs = read.csv("cc00_tab_B13_govt_programs_employment_finances.csv")
 ```
 
+Data preprocessing
+```{r}
+death_rate = b4_vital_stat_health$B4.vst05
+FIPS = b1_population$B1.geo01
+county_name = b1_population$B1.geo09
+population = b1_population$B1.pop03
+
+num_care_facilities = b4_vital_stat_health$B4.hlt06
+per_below_poverty = b5_education_income_poverty$B5.pov04
+per_high_grad = as.numeric(b5_education_income_poverty$B5.edc06) - as.numeric(b5_education_income_poverty$B5.edc08)
+per_bachelor_grad = b5_education_income_poverty$B5.edc08
+num_violent_crimes = b6_crime_housing$B6.crm02
+num_property_crimes = b6_crime_housing$B6.crm03
+unemploy_rate = b7_labor_employment$B7.clf05
+per_cap_income_as_per_national_average = b8_income$B8.pie06
+num_social_security_ben_per_1000_resid = b13_govt_programs$B13.soc04
+
+X = cbind(death_rate,FIPS,county_name,population,num_care_facilities,per_below_poverty,per_high_grad,per_bachelor_grad,num_violent_crimes,num_property_crimes,unemploy_rate,per_cap_income_as_per_national_average,num_social_security_ben_per_1000_resid)
+
+X = as.data.frame(X)
+
+states = toupper(c("Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Carolina","North Dakota","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia","Wisconsin","Wyoming"))
+
+# delete US row
+X = X[-1,]
+
+#delete State rows
+for (i in states){
+  X = X[!grepl(i,X$county_name),]
+}
+
+# convert columns to numeric
+i = c(1,4,5,6,7,8,9,10,11,12,13)
+
+X[,i] = apply(X[,i], MARGIN = 2, function(x) as.numeric(as.character(x)))
+
+# delete rows with NA values
+X = X[-which(is.na(X), arr.ind = TRUE),]
+
+# feature scaling (standardize)
+X_scaled = X
+X_scaled[,i] = scale(X_scaled[,i])
+
+```
+
+Data cleaning
+```{r}
+death_incd = merge(death, incd, by.x="FIPS",by.y="FIPS", sort = TRUE)
+
+FIPS = death_incd$FIPS
+County = death_incd$County.x
+age_adj_death_rate = death_incd$Age.Adjusted.Death.Rate
+age_adj_incd_rate = death_incd$Age.Adjusted.Incidence.Rate.Ê....cases.per.100.000
+
+age_adj_death_rate = as.numeric(age_adj_death_rate)
+age_adj_incd_rate = as.numeric(age_adj_incd_rate)
+
+data = cbind(FIPS, County, age_adj_death_rate, age_adj_incd_rate)
+
+na_rows = data[is.na(data),]
+
+```
 
 Abstract (150 words or less)
 ```{r}
