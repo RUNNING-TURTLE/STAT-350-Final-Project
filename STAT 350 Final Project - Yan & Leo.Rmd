@@ -34,10 +34,6 @@ Project Information
 # 8 Interpretation	of	results
 ```
 
-```{r "setup", include=FALSE}
-knitr::opts_knit$set(root.dir = "C:\\Users\\LYC\\Desktop\\SFU\\Fall 2020 Courses\\STAT 350\\Final project\\data")
-```
-
 Initialization
 ```{r}
 
@@ -98,8 +94,157 @@ X = X[-which(is.na(X), arr.ind = TRUE),]
 # feature scaling (standardize)
 X_scaled = X
 X_scaled[,i] = scale(X_scaled[,i])
-
 ```
+
+```{r}
+which.max(abs(cor(X_scaled[-c(2,3)]))[-1,1])
+# num_social_security_ben_per_1000_resid most correlative
+summary(lm(data = X_scaled, death_rate ~ num_social_security_ben_per_1000_resid))
+```
+
+```{r}
+# residual given num_social_security_ben_per_1000_resid in the model
+resid_step2 <- X_scaled[,1]-X_scaled[,13]*8.367e-01
+# calculate the correlation, and find the most correlated
+which.max(abs(cor(cbind(resid_step2,
+                        X_scaled[-c(1,2,3,13)])))[-1,1])
+# per_below_poverty most correlative
+summary(lm(data = X_scaled, death_rate ~ num_social_security_ben_per_1000_resid +
+             per_below_poverty))
+```
+
+```{r}
+# residual given num_social_security_ben_per_1000_resid, and per_below_poverty in the model
+resid_step3 <- X_scaled[,1] -
+  X_scaled$num_social_security_ben_per_1000_resid*8.114e-01 -
+  X_scaled$per_below_poverty*1.196e-01
+# calculate the correlation, and find the most correlated
+which.max(abs(cor(cbind(resid_step3,X_scaled[-c(1,2,3,6,13)])))[-1,1])
+# per_below_poverty most correlative
+summary(lm(data = X_scaled, death_rate ~ 
+             num_social_security_ben_per_1000_resid +
+             unemploy_rate + 
+             per_below_poverty))
+```
+
+```{r}
+# residual given num_social_security_ben_per_1000_resid, per_below_poverty, and unemploy_rate in the model
+resid_step4 <- X_scaled[,1] -
+  X_scaled$num_social_security_ben_per_1000_resid*8.098e-01 -
+  X_scaled$per_below_poverty*1.745e-01 + 
+  X_scaled$unemploy_rate*9.933e-02
+# calculate the correlation, and find the most correlated
+which.max(abs(cor(cbind(resid_step4,X_scaled[-c(1,2,3,6,11,13)])))[-1,1])
+# per_below_poverty most correlative
+summary(lm(data = X_scaled, death_rate ~ 
+             num_social_security_ben_per_1000_resid +
+             unemploy_rate + 
+             per_below_poverty + 
+             per_bachelor_grad))
+```
+
+```{r}
+# residual given num_social_security_ben_per_1000_resid, per_below_poverty, unemploy_rate, and per_bachelor_grad in the model
+resid_step5 <- X_scaled[,1] -
+  X_scaled$num_social_security_ben_per_1000_resid*7.801e-01 -
+  X_scaled$per_below_poverty*1.591e-01 + 
+  X_scaled$unemploy_rate*1.135e-01 + 
+  X_scaled$per_bachelor_grad*7.407e-02
+# calculate the correlation, and find the most correlated
+which.max(abs(cor(cbind(resid_step5,X_scaled[-c(1,2,3,6,8,11,13)])))[-1,1])
+# per_below_poverty most correlative
+summary(lm(data = X_scaled, death_rate ~ 
+             num_social_security_ben_per_1000_resid +
+             unemploy_rate + 
+             per_below_poverty + 
+             per_bachelor_grad +
+             per_cap_income_as_per_national_average))
+```
+
+```{r}
+# residual given num_social_security_ben_per_1000_resid, per_below_poverty, unemploy_rate, per_bachelor_grad, and per_cap_income_as_per_national_average in the model
+resid_step6 <- X_scaled[,1] -
+  X_scaled$num_social_security_ben_per_1000_resid*7.734e-01 -
+  X_scaled$per_below_poverty*2.125e-01 + 
+  X_scaled$unemploy_rate*1.136e-01 + 
+  X_scaled$per_bachelor_grad*1.546e-01 - 
+  X_scaled$per_cap_income_as_per_national_average*1.383e-01
+# calculate the correlation, and find the most correlated
+which.max(abs(cor(cbind(resid_step6,X_scaled[-c(1,2,3,6,8,11,12,13)])))[-1,1])
+# per_below_poverty most correlative
+summary(lm(data = X_scaled, death_rate ~ 
+             num_social_security_ben_per_1000_resid +
+             unemploy_rate + 
+             per_below_poverty + 
+             per_bachelor_grad +
+             per_cap_income_as_per_national_average +
+             num_care_facilities))
+```
+
+```{r}
+# residual given num_social_security_ben_per_1000_resid, per_below_poverty, unemploy_rate, per_bachelor_grad, per_cap_income_as_per_national_average, and num_care_facilities in the model
+resid_step7 <- X_scaled[,1] -
+  X_scaled$num_social_security_ben_per_1000_resid*7.748e-01 -
+  X_scaled$per_below_poverty*2.084e-01 + 
+  X_scaled$unemploy_rate*1.139e-01 + 
+  X_scaled$per_bachelor_grad*1.563e-01 - 
+  X_scaled$per_cap_income_as_per_national_average*1.282e-01 -
+  X_scaled$num_care_facilities*2.239e-02
+# calculate the correlation, and find the most correlated
+which.max(abs(cor(cbind(resid_step7,X_scaled[-c(1,2,3,5,6,8,11,12,13)])))[-1,1])
+# per_below_poverty most correlative
+summary(lm(data = X_scaled, death_rate ~ 
+             num_social_security_ben_per_1000_resid +
+             unemploy_rate + 
+             per_below_poverty + 
+             per_bachelor_grad +
+             per_cap_income_as_per_national_average +
+             num_care_facilities + 
+             population))
+```
+
+```{r}
+# residual given num_social_security_ben_per_1000_resid, per_below_poverty, unemploy_rate, per_bachelor_grad, per_cap_income_as_per_national_average, num_care_facilities, and population in the model
+resid_step8 <- X_scaled[,1] -
+  X_scaled$num_social_security_ben_per_1000_resid*7.714e-01 -
+  X_scaled$per_below_poverty*2.105e-01 + 
+  X_scaled$unemploy_rate*1.138e-01 + 
+  X_scaled$per_bachelor_grad*1.562e-01 - 
+  X_scaled$per_cap_income_as_per_national_average*1.284e-01 -
+  X_scaled$num_care_facilities*7.561e-02 +
+  X_scaled$population*5.974e-02
+# calculate the correlation, and find the most correlated
+which.max(abs(cor(cbind(resid_step8,X_scaled[-c(1,2,3,4,5,6,8,11,12,13)])))[-1,1])
+# per_below_poverty most correlative
+summary(lm(data = X_scaled, death_rate ~ 
+             num_social_security_ben_per_1000_resid +
+             unemploy_rate + 
+             per_below_poverty + 
+             per_bachelor_grad +
+             per_cap_income_as_per_national_average +
+             num_care_facilities + 
+             population +
+             per_high_grad))
+# eliminate per_high_grad
+```
+
+
+
+```{r}
+final_model <- lm(data = X_scaled, death_rate ~ 
+             num_social_security_ben_per_1000_resid +
+             unemploy_rate + 
+             per_below_poverty + 
+             per_bachelor_grad +
+             per_cap_income_as_per_national_average +
+             num_care_facilities + 
+             population +
+             per_high_grad)
+```
+
+
+
+
 
 Abstract (150 words or less)
 ```{r}
