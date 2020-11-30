@@ -10,8 +10,6 @@ Project Information
 ```{r}
 # we are assigned Dataset 1 (Cancer)
 # https://data.world/nrippner/cancer-linear-regression-model-tutorial
-
-
 # The	following	sections	must	be	included:
 #    Abstract (150	words	or	less)
 #    Introduction (must	contain	a	thorough	description	of	the	questions	of	interest)
@@ -20,11 +18,7 @@ Project Information
 #    Results (all	figures	should	be	properly	labelled	and	discussed)
 #    Conclusion (must	contain	a	concise	discussion	of	what	has	been	learned	about	the	application	from	the	analysis)
 #    Appendix (must	include	all	data	and	R	Markdown	files	for	reproducibility)
-
-
 # BEFORE commencing	your	analysis, you	must	introduce	one	new	additional	data	point into	your	assigned	dataset.	A	description	of	this	unique data	point	must	be	included	in	your	Data	 Description section	along	with	some rationale	for	the	values	chosen.		
-
-
 # Grading	Scheme:
 # 8 Overall	presentation	and	organization	of	materials (includes	quality	of	writing	and	quality	of	
 # the	Github	presentation,	…)
@@ -62,7 +56,6 @@ death_rate = b4_vital_stat_health$B4.vst05
 FIPS = b1_population$B1.geo01
 county_name = b1_population$B1.geo09
 population = b1_population$B1.pop03
-
 num_care_facilities = b4_vital_stat_health$B4.hlt06
 per_below_poverty = b5_education_income_poverty$B5.pov04
 per_high_grad = as.numeric(b5_education_income_poverty$B5.edc06) - as.numeric(b5_education_income_poverty$B5.edc08)
@@ -72,47 +65,35 @@ num_property_crimes = b6_crime_housing$B6.crm03
 unemploy_rate = b7_labor_employment$B7.clf05
 per_cap_income_as_per_national_average = b8_income$B8.pie06
 num_social_security_ben_per_1000_resid = b13_govt_programs$B13.soc04
-
 X = cbind(death_rate,FIPS,county_name,population,num_care_facilities,per_below_poverty,per_high_grad,per_bachelor_grad,num_violent_crimes,num_property_crimes,unemploy_rate,per_cap_income_as_per_national_average,num_social_security_ben_per_1000_resid)
-
 X = as.data.frame(X)
-
 states = toupper(c("Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Carolina","North Dakota","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia","Wisconsin","Wyoming"))
-
 # delete US row
 X = X[-1,]
-
 #delete State rows
 for (i in states){
   X = X[!grepl(i,X$county_name),]
 }
-
 # convert columns to numeric
 i = c(1,4,5,6,7,8,9,10,11,12,13)
-
 X[,i] = apply(X[,i], MARGIN = 2, function(x) as.numeric(as.character(x)))
-
 # delete rows with NA values
 X = X[-which(is.na(X), arr.ind = TRUE),]
-
 # feature scaling (standardize)
 X_scaled = X
 X_scaled[,i] = scale(X_scaled[,i])
-
 ```
 
 Steps to follow for a full regression analysis
 ```{r}
 # feature selection first or model validity first?
 #   - feature selection because we want to figure out the model structure
-
 # model validity, can we use a linear regression model
 #   1. The relationship between the response y and the regressors is linear, at least approximately.
 #   2. The error term ε has zero mean.
 #   3. The error term ε has constant variance σ 2.
 #   4. The errors are uncorrelated.
 #   5. The errors are normally distributed.
-
 ```
 
 Feature selection using stepwise regression (our own implementation, alpha = 0.05)
@@ -120,7 +101,6 @@ Feature selection using stepwise regression (our own implementation, alpha = 0.0
 which.max(abs(cor(X_scaled[-c(2,3,4)]))[-1,1])
 # num_social_security_ben_per_1000_resid most correlative
 summary(lm(data = X_scaled, death_rate ~ num_social_security_ben_per_1000_resid))
-
 # residual given num_social_security_ben_per_1000_resid in the model
 resid_step2 <- X_scaled[,1]-X_scaled[,13]*8.367e-01
 # calculate the correlation, and find the most correlated
@@ -128,7 +108,6 @@ which.max(abs(cor(cbind(resid_step2, X_scaled[-c(1,2,3,4,13)])))[-1,1])
 # per_below_poverty most correlative
 summary(lm(data = X_scaled, death_rate ~ num_social_security_ben_per_1000_resid +
              per_below_poverty))
-
 # residual given num_social_security_ben_per_1000_resid, and per_below_poverty in the model
 resid_step3 <- X_scaled[,1] -
   X_scaled$num_social_security_ben_per_1000_resid*8.114e-01 -
@@ -140,7 +119,6 @@ summary(lm(data = X_scaled, death_rate ~
              num_social_security_ben_per_1000_resid +
              unemploy_rate + 
              per_below_poverty))
-
 # residual given num_social_security_ben_per_1000_resid, per_below_poverty, and unemploy_rate in the model
 resid_step4 <- X_scaled[,1] -
   X_scaled$num_social_security_ben_per_1000_resid*8.098e-01 -
@@ -154,7 +132,6 @@ summary(lm(data = X_scaled, death_rate ~
              unemploy_rate + 
              per_below_poverty + 
              per_cap_income_as_per_national_average))
-
 # residual given num_social_security_ben_per_1000_resid, per_below_poverty, unemploy_rate, and per_cap_income_as_per_national_average in the model
 resid_step5 <- X_scaled[,1] -
   X_scaled$num_social_security_ben_per_1000_resid * 8.167e-01 -
@@ -170,15 +147,12 @@ summary(lm(data = X_scaled, death_rate ~
              per_below_poverty + 
              per_cap_income_as_per_national_average +
              num_care_facilities))
-
 # do not include num_care_facilities since alpha = 0.156 > 0.05
-
 final_model <- lm(data = X_scaled, death_rate ~ 
              num_social_security_ben_per_1000_resid +
              unemploy_rate + 
              per_below_poverty + 
              per_cap_income_as_per_national_average)
-
 summary(final_model)
 ```
 
@@ -200,15 +174,12 @@ Difference between our own stepwise final model and stepAIC final model
 # Our own stepwise steps find that num_care_facilities does not meet the alpha <= 0.05 criteria, so it's not included
  
 # the stepAIC function does include num_care_facilities because including it in the model generates better AIC score.
-
 # we decided to NOT include num_care_facilities in our final model choice
-
 final_model <- lm(data = X_scaled, death_rate ~ 
              num_social_security_ben_per_1000_resid +
              unemploy_rate + 
              per_below_poverty + 
              per_cap_income_as_per_national_average)
-
 ```
 
 Model validation
@@ -219,82 +190,82 @@ Model validation
 #   3. The error term ε has constant variance.
 #   4. The errors are uncorrelated.
 #   5. The errors are normally distributed.
-
 summary(final_model)
-
 residuals = final_model$residuals
-
 # student residual against y_hat and regressors
 student_r = rstudent(final_model)
-
 y_hat = predict(final_model,X_scaled)
-
 par(mfrow=c(2,3))
-
 plot(y_hat, student_r, main = "Student residuals vs Y_hat") # 3rd assumption & 1st assumption & 2nd assumption
 abline(h = 0, col = "red")
-
 plot(X_scaled[,13], student_r, main = "Student residuals vs num_social_security_ben_per_1000_resid") # good?
 abline(h = 0, col = "red")
-
 plot(X_scaled[,11], student_r, main = "Student residuals vs unemploy_rate") # good?
 abline(h = 0, col = "red")
-
 plot(X_scaled[,6], student_r, main = "Student residuals vs per_below_poverty") # good?
 abline(h = 0, col = "red")
-
 plot(X_scaled[,12], student_r, main = "Student residuals vs per_cap_income_as_per_national_avg") # good?
 abline(h = 0, col = "red")
-
 # other residual plots (QQ norm, residuals vs index)
-
 qqnorm(student_r) # 5th assumption
-
 plot(student_r, main = "Student residuals vs Index") # 4th assumption
 abline(h=0, col = "red")
-
 # find influential points, result: no data point's D > 1
-
 mdl_cook = cooks.distance(final_model)
-
 sort(mdl_cook, decreasing = TRUE)
+```
 
+```{r}
+# do experiment 1000 times. create a vector which will contain mean percentage error for each experiment. 
+percent <- seq(1000)
+for (index_i in percent) {
+  # Random select 80% data's index. 
+  sample_index <- sample(length(X_scaled[,1]), round(2563*0.8, 0))
+  # Store those data in X_scaled_80
+  X_scaled_80 <- X_scaled[sample_index,]
+  # Store remaining 20% test data in X_scaled_20
+  X_scaled_20 <- X_scaled[-sample_index,]
+  # apply model by using partial data
+  final_model_80 <- lm(data = X_scaled_80, death_rate ~ 
+             num_social_security_ben_per_1000_resid +
+             unemploy_rate + 
+             per_below_poverty + 
+             per_cap_income_as_per_national_average)
+  # calculate predict y
+  predict_y_20 <- as.matrix(X_scaled_20[,c(6,11,12,13)]) %*%
+    as.matrix(summary(final_model_80)[[4]][,1][-1], mode = "numeric") +
+    rep(summary(final_model_80)[[4]][,1][1], length(X_scaled_20[,1]))
+  # store the percentage error in the vector
+  percent[index_i] <- mean(abs(predict_y_20-X_scaled_20[,1])/X_scaled_20[,1])
+}
+# get the mean percentage error
+mean(percent)
 ```
 
 Abstract (150 words or less)
 ```{r}
-
-
 ```
 
 Introduction (must contain a thorough description of the questions of interest)
 ```{r}
-
-
 ```
 
 Data Description (must contain data visualizations that are properly labeled and explained)
 ```{r}
-
 ```
 
 Methods (must contain a complete description of all analysis tools used)
 ```{r}
-
 ```
 
 Results (all figures should be properly labelled and discussed)
 ```{r}
-
 ```
 
 Conclusion (must contain a concise discussion of what has been learned about the application from the analysis)
 ```{r}
-
 ```
 
 Appendix (must include all data and R Markdown files for reproducibility)
 ```{r}
-
 ```
-
