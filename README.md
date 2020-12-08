@@ -2,24 +2,24 @@
 Authors: Leo Chen & Tianxing Yan
 
 ## Abstract 
-Our main purpose is to conduct a thorough regression analysis to analyze if there exist a linear relationship between U.S. death rate and a variety of independent variables. A special observation (crazytown) is also added to see if it will have any impact on feature selection and if we can detect it during model validation. At the end of all our analysis, we conclude that:
-- Crazytown is identifiable during model validity analysis.
-- crazytown does impact feature selection, but only for manual stepwise regression.
-- our final linear regression model satisfies all assumption requirements.
-- within our variables, the most explanatory for U.S. death rate are unemployment rate, poverty level, per capital income, and number of social security beneficiaries per 1000 residents. 
+Our main purpose is to conduct a thorough regression analysis to analyze if there exist a linear relationship between U.S. death rate and a variety of independent variables. A special observation (Crazytown) is also added to see if it will have any impact on feature selection and if we can detect it during model validation. At the end of all our analysis, we conclude that:
+- Crazytown is identifiable during model validity analysis
+- Crazytown does impact feature selection, but only for manual stepwise regression
+- Our final linear regression model satisfies all assumption requirements
+- Within our independent variables, the most explanatory for U.S. death rate are unemployment rate, poverty level, per capital income, and number of social security beneficiaries per 1000 residents
 
 ## Introduction
-Death has many contributing factors. In this report, we attempt to analyze U.S. death rate through linear regression analysis using U.S. 2000 census data. We also introduce a special observation (crazytown) into the dataset for special analysis purpose. Throughout this report, we are trying to answer the following five questions:
-- is there a linear relationship between the death rate and some of the independent variables? If so, which variables provide the most explanatory power?
-- does our linear regression model satisfy all model assumptions?
-- is Crazytown identifiable during model validation?
-- does crazydown affect feature selection?
+Death has many contributing factors. In this report, we attempt to analyze U.S. death rate through linear regression analysis using U.S. 2000 census data. We also introduce a special observation (Crazytown) into the dataset for special analysis purpose. Throughout this report, we are trying to answer the following five questions:
+- Is there a linear relationship between the death rate and some of the independent variables? If so, which variables provide the most explanatory power?
+- Does our linear regression model satisfy all model assumptions?
+- Is Crazytown identifiable during model validation?
+- Does Crazydown affect feature selection?
 
 The core structure of our analysis is listed below:
-1) download and preprocess data, create separate copy and include crazytown.
-2) feature selection (manual stepwise regression & stepAIC function) for original dataset and new dataset.
-3) model validation for both models (original and new dataset).
-4) cross validation.
+1) Download and preprocess data, create separate copy and include Crazytown
+2) Feature selection (manual stepwise regression & stepAIC function) for original dataset and new dataset
+3) Model validation for both models (original and new dataset)
+4) Cross validation
 
 ## Data Description
 All our data originates from the U.S. 2000 census. Since the entire census dataset contains too much information, we hand picked 10 variables to regress against the death rate. The detailed description of each variable is presented below:
@@ -47,9 +47,9 @@ All values of Crazytown are column averages except for death_rate. where the cou
 | num_social_security_ben_per_1000_resid | 193.2333 | 193.0000 |
 
 ## Data Preprocessing
-1) We extract all our variables from appropriate U.S. 2000 cencus data tables into a dataframe (original dataset).
-2) Create another copy of the dataframe and incldue Crazytown (new dataset).
-3) Unit normal scaling for all appropriate variables.
+1) We extract all our variables from appropriate U.S. 2000 cencus data tables into a dataframe (original dataset)
+2) Create another copy of the dataframe and incldue Crazytown (new dataset)
+3) Unit normal scaling for all appropriate variables
 
 The resulting output from data preprocessing are two dataframes called "X_scaled" and "X_new_scaled". The only difference between the two is that X_new_scaled contains Crazytown.
 
@@ -64,11 +64,11 @@ Interestingly, when we used stepAIC for both datasets, we get the same model, bu
 
 ## Model validation
 At this stage, we are trying to assess if our model under X_scaled data satisfy the following assumptions:
-1. The relationship between the response y and the regressors is linear, at least approximately.
-2. The error term ε has zero mean.
-3. The error term ε has constant variance.
-4. The errors are uncorrelated.
-5. The errors are normally distributed.
+1. The relationship between the response y and the regressors is linear, at least approximately
+2. The error term ε has zero mean
+3. The error term ε has constant variance
+4. The errors are uncorrelated
+5. The errors are normally distributed
 
 To assess the first three assumptions, we plotted student residuals against y_hat and also against all regressors in the model.
 
@@ -80,7 +80,7 @@ We graph residual errors against each regressor below to further analyze the sec
 
 ![](Image/000011.jpg)
 
-Looking at these four graphs, they match our initial assessment that our model satisfies the second and third assumption. In each graph we can observe errors are spread quite evenly around zero. Once again, there are a few points that are outside three standard deviations, we think this is acceptable due to the large number of observations we have in our dataset. 
+Looking at these four graphs, they match our initial assessment that our model satisfies the second and third assumption. In each graph we can observe errors are spread quite evenly around zero. Once again, there are a few points that are outside three standard deviations, we think this is acceptable due to the large number of observations we have in our dataset. This is further confirmed in a future analysis step when we analyze Cook's Distances. 
 
 Next, we plot the QQ norm plot below:
 
@@ -109,10 +109,10 @@ From each of these plots, we can clearly identify there is one error that is 10 
 ![](Image/00000b.jpg)
 
 Lastly, we conduct cross validation analysis for two purposes:
-1) Study the stability of model coefficients.
-2) Study the stability of prediction performance of the model.
+1) Study the stability of model coefficients
+2) Study the stability of prediction performance of the model
 
-We split X_scaled dataset into 80% training and 20% validation sets. Then we run 1000 simulations and recorded each run's RMSPE, MAPE, and model coefficients. Next we plot the histogram for Root Mean Square Percentage Error (RMSPE), Mean Absolute Percentage Error (MAPE) to visualize the variability of each.
+We split X_scaled dataset into 80% training and 20% validation sets. Then we run 1000 simulations and recorded each run's RMSPE, MAPE, and model coefficients. Next we plot the histogram for Root Mean Square Prediction Error (RMSPE), Mean Absolute Prediction Error (MAPE) to visualize the variability of each.
 
 ![](Image/00000d.jpg)
 
@@ -124,22 +124,22 @@ Next, we also plot the histogram for model coefficients, and observe that all fo
 
 # Conclusion
 At the beginning of our report, we identified five key questions to address:
-  - is there a linear relationship between the death rate and some of the independent variables? 
+  - Is there a linear relationship between the death rate and some of the independent variables? 
   - If so, which variables provide the most explanatory power?
-  - does our linear regression model satisfy all model assumptions?
-  - is Crazytown identifiable during model validation?
-  - does crazydown affect feature selection?
+  - Does our linear regression model satisfy all model assumptions?
+  - Is Crazytown identifiable during model validation?
+  - Does crazydown affect feature selection?
   
 Though our analysis presented above, we conclude that:
-  - There is a reasonable linear relationship between death rate and some of the independent variables; Unemploy_rate, per_below_poverty, per_cap_income_as_per_national_average, and num_social_security_ben_per_1000_resid provided the most explanatory power. R2 is 72%, so our model probably still miss some key variables that weren't included in our original set of independent variables.
-  - Our linear regression model satisfies all five model assumptions.
-  - Crazytown was identified during model validation analysis.
-  - Crazytown did affect feature selection, but interestingly enough it only affected manual stepwise regression and not stepAIC.
+  - There is a reasonable linear relationship between death rate and some of the independent variables; Unemploy_rate, per_below_poverty, per_cap_income_as_per_national_average, and num_social_security_ben_per_1000_resid provided the most explanatory power. R2 is 72%, so our model probably still miss some key variables that weren't included in our original set of independent variables
+  - Our linear regression model satisfies all five model assumptions
+  - Crazytown was identified during model validation analysis
+  - Crazytown did affect feature selection, but interestingly enough it only affected manual stepwise regression and not stepAIC
   
 What we learned:
-  - Extreme outliers can affect feature selection.
-  - If we do find outliers that we need to delete from our dataset, we should go back to feature selection to see if there is any change in features selected. 
-  - Understanding what questions we are trying to answer is very important. It took us a while to figure out what exactly we are trying to analyze. 
+  - Extreme outliers can affect feature selection
+  - If we do find outliers that we need to delete from our dataset, we should go back to feature selection to see if there is any change in features selected
+  - Understanding what questions we are trying to answer is very important. It took us a while to figure out what exactly we are trying to analyze.
   - Data preprocessing and organization is also very important. There are many components for this report and it was a lot easier to pull everything together when files and codes are organized logically.
   
 # Appendix
