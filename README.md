@@ -141,7 +141,7 @@ What we learned:
   - Data preprocessing and organization is also very important. There are many components for this report and it was a lot easier to pull everything together when files and codes are organized logically.
   
 # Appendix
-Data below are published on this ![website](https://webapp1.dlib.indiana.edu/virtual_disk_library/index.cgi/4191241/FID1524)
+All our raw data can be found at: [website](https://webapp1.dlib.indiana.edu/virtual_disk_library/index.cgi/4191241/FID1524)
 - [death rate](Source%20data/cc00_tab_B4_vital_statistics_and_health.csv)
 - [num_social_security_ben_per_1000_resid](Source%20data/cc00_tab_B13_govt_programs_employment_finances.csv)
 - [population](Source%20data/cc00_tab_B1_area_population.csv)
@@ -150,7 +150,7 @@ Data below are published on this ![website](https://webapp1.dlib.indiana.edu/vir
 - [unemploy_rate](Source%20data/cc00_tab_B7_labor_force_employment.csv)
 - [per_cap_income_as_per_national_average](Source%20data/cc00_tab_B8_personal_income_earnings.csv)
 
-Our code for implementing this analysis, a [RMD file](STAT%20350%20Final%20Project%20-%20Yan%20&%20Leo.Rmd). 
+All our code can be found at: [RMD file](STAT%20350%20Final%20Project%20-%20Yan%20&%20Leo.Rmd). 
 
 
 
