@@ -23,6 +23,7 @@ The core structure of our analysis is listed below:
 
 ## Data Description
 All our data originates from the U.S. 2000 census. Since the entire census dataset contains too much information, we hand picked 10 variables to regress against the death rate. The detailed description of each variable is presented below:
+
 ![](Image/data%20description.jpg)
 
 The additional data point we introduce is called "Crazytown". There are two goals for introducing this additional datapoint.
@@ -54,9 +55,11 @@ The resulting output from data preprocessing are two dataframes called "X_scaled
 
 ## Feature Selection
 We performed manual stepwise regression and stepAIC on both X_scaled and X_new_scaled. For our manual stepwise regression process, we set alpha = 0.05. The resulting models for each is presented below:
+
 ![](Image/feature%20selection.jpg)
 
 Interestingly, when we used stepAIC for both datasets, we get the same model, but when we implement stepwise regression, the model under X_new_scaled does not contain the "per_cap_income_as_per_national_average" variable since it does not meet the alpha = 0.05 threshold. We chose to use variables from the manual stepwise regressions in our final models for further analysis. So our final model are below:
+
 ![](Image/final%20model.jpg)
 
 ## Model validation
@@ -68,21 +71,25 @@ At this stage, we are trying to assess if our model under X_scaled data satisfy 
 5. The errors are normally distributed
 
 To assess the first three assumptions, we plotted student residuals against y_hat and also against all regressors in the model.
+
 ![](Image/000005.jpg)
 
 Looking at the student residuals vs Y_hat graph, we can see the error terms are spread quite evenly around zero. Although there are some errors outside three standard deviations, we have to keep in mind that there are over 2650 observations in total, and the general shape of the graph indicate the model satisfies the first, second, and third assumption. 
 
 We graph residual errors against each regressor below to further analyze the second and third assumptions.
+
 ![](Image/000011.jpg)
 
 Looking at these four graphs, they match our initial assessment that our model satisfies the second and third assumption. In each graph we can observe errors are spread quite evenly around zero. Once again, there are a few points that are outside three standard deviations, we think this is acceptable due to the large number of observations we have in our dataset. 
 
 Next, we plot the QQ norm plot below:
+
 ![](Image/000003.jpg)
 
 We observe that it is not perfectly diagonal, but relatively close. We conclude that it is satisfactory to meet the 5th assumption. 
 
 Next, we plot student residuals aginast index below:
+
 ![](Image/000006.jpg)
 
 Similar to other plots above, we observe the vast majority of errors are spread evenly in a tight band around zero. A few error terms do lie outside three standard deviations. From this graph, we conclude that this model also meets the fourth assumption.
@@ -92,9 +99,11 @@ Lastly, we calculated Cook's distance for each datapoint. If any datapoint has a
 At this point, we can conclude that the linear regression model using X_scaled data meets all five model assumptions. Can we identify Crazytown during model validation analysis? To answer this question, we conduct model validation analysis for the model under X_new_scaled dataset since it includes Crazytown.
 
 Again, we plot student residuals against Y_hat, and against each regressor in the model. These graphs are presented below:
+
 ![](Image/000018.jpg)
 
 From each of these plots, we can clearly identify there is one error that is 10 standard deviations away. This point belongs to Crazytown. To make the comparison more clearly, we plot Student residuals vs Y_hat for both X_scaled and X_new_scaled data below, and we observe the only difference is the error term that belongs to Crazytown:
+
 ![](Image/00000b.jpg)
 
 Lastly, we conduct cross validation analysis for two purposes:
@@ -102,11 +111,13 @@ Lastly, we conduct cross validation analysis for two purposes:
 2) Study the stability of prediction performance of the model
 
 We split X_scaled dataset into 80% training and 20% validation sets. Then we run 1000 simulations and recorded each run's RMSPE, MAPE, and model coefficients. Next we plot the histogram for Root Mean Square Percentage Error (RMSPE), Mean Absolute Percentage Error (MAPE) to visualize the variability of each.
+
 ![](Image/00000d.jpg)
 
 From the above graphs, we can conclude that the variablity for both RMSPE and MAPE are quite small.
 
 Next, we also plot the histogram for model coefficients, and observe that all four coefficients' variability are minimal.
+
 ![](Image/000019.jpg)
 
 # Conclusion
@@ -138,6 +149,8 @@ Data below are published on this ![website](https://webapp1.dlib.indiana.edu/vir
 - [num_violent_crimes](Source%20data/cc00_tab_B6_crime_housing_building_permit.csv)
 - [unemploy_rate](Source%20data/cc00_tab_B7_labor_force_employment.csv)
 - [per_cap_income_as_per_national_average](Source%20data/cc00_tab_B8_personal_income_earnings.csv)
+
+Our code for implementing this analysis, a [RMD file](STAT%20350%20Final%20Project%20-%20Yan%20&%20Leo.Rmd). 
 
 
 
