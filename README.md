@@ -23,7 +23,7 @@ The core structure of our analysis is listed below:
 
 ## Data Description
 All our data originates from the U.S. 2000 census. Since the entire census dataset contains too much information, we hand picked 10 variables to regress against the death rate. The detailed description of each variable is presented below:
-![](data%20description.jpg)
+![](Image/data%20description.jpg)
 
 The additional data point we introduce is called "Crazytown". There are two goals for introducing this additional datapoint.
 1) Can our model validation process identify this new datapoint?
@@ -44,6 +44,45 @@ All values of Crazytown are column averages except for death_rate. where the cou
 | unemploy_rate | 4.731813 | 4.730000 |
 | per_cap_income_as_per_national_average | 78.73543 | 78.00000 |
 | num_social_security_ben_per_1000_resid | 193.2333 | 193.0000 |
+
+## Data Preprocessing
+1) We extract all our variables from appropriate U.S. 2000 cencus data tables into a dataframe (original dataset)
+2) Create another copy of the dataframe and incldue Crazytown (new dataset)
+3) Unit normal scaling for all appropriate variables 
+
+The resulting output from data preprocessing are two dataframes called "X_scaled" and "X_new_scaled". The only difference between the two is that X_new_scaled contains Crazytown.
+
+## Feature Selection
+We performed manual stepwise regression and stepAIC on both X_scaled and X_new_scaled. For our manual stepwise regression process, we set alpha = 0.05. The resulting models for each is presented below:
+![](Image/feature%20selection.jpg)
+
+Interestingly, when we used stepAIC for both datasets, we get the same model, but when we implement stepwise regression, the model under X_new_scaled does not contain the "per_cap_income_as_per_national_average" variable since it does not meet the alpha = 0.05 threshold. We chose to use variables from the manual stepwise regressions in our final models for further analysis. So our final model are below:
+![](Image/final%20model.jpg)
+
+## Model validation
+At this stage, we are trying to assess if our model under X_scaled data satisfy the following assumptions:
+1. The relationship between the response y and the regressors is linear, at least approximately
+2. The error term ε has zero mean
+3. The error term ε has constant variance
+4. The errors are uncorrelated
+5. The errors are normally distributed
+
+To assess the first three assumptions, we plotted student residuals against y_hat and also against all regressors in the model.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
