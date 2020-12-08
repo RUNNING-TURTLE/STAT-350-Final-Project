@@ -5,45 +5,17 @@ date: "10/24/2020"
 output: pdf_document
 ---
 
-Project Information
-```{r}
-# We are assigned Dataset 1 (Cancer)
-# https://data.world/nrippner/cancer-linear-regression-model-tutorial
-
-# The	following	sections	must	be	included:
-#    Abstract (150	words	or	less)
-#    Introduction (must	contain	a	thorough	description	of	the	questions	of	interest)
-#    Data	Description (must	contain	data	visualizations	that	are	properly	labelled	and	explained)
-#    Methods (must	contain	a	complete	description	of	all	analysis	tools	used)
-#    Results (all	figures	should	be	properly	labelled	and	discussed)
-#    Conclusion (must	contain	a	concise	discussion	of	what	has	been	learned	about	the	application	from	the	analysis)
-#    Appendix (must	include	all	data	and	R	Markdown	files	for	reproducibility)
-
-# BEFORE commencing	your	analysis, you	must	introduce	one	new	additional	data	point into	your	assigned	dataset.	A	description	of	this	unique data	point	must	be	included	in	your	Data	 Description section	along	with	some rationale	for	the	values	chosen.		
-
-# Grading	Scheme:
-# 8 Overall	presentation	and	organization	of	materials (includes	quality	of	writing	and	quality	of	
-# the	Github	presentation,	…)
-# 5 Quality	of	data	visualizations
-# 8 Correctness	of	analysis
-# 6 Quality	and	selection	of	relevant	figures	
-# 8 Interpretation	of	results
-```
-
 ```{r "setup", include=FALSE}
 knitr::opts_knit$set(root.dir = "C:\\Users\\LYC\\Desktop\\SFU\\Fall 2020 Courses\\STAT 350\\Final project\\data")
 ```
 
-Initialization
-```{r}
+```{r include=FALSE}
+# Initialization & import raw data
+
 library(MASS)
 library(ModelMetrics)
-```
 
-Import datasets
-```{r}
 b1_population = read.csv("cc00_tab_B1_area_population.csv")
-b2_pop_by_age_sex_race = read.csv("cc00_tab_B2_pop_by_age_sex_race.csv")
 b4_vital_stat_health = read.csv("cc00_tab_B4_vital_statistics_and_health.csv")
 b5_education_income_poverty = read.csv("cc00_tab_B5_education_income_poverty.csv")
 b6_crime_housing = read.csv("cc00_tab_B6_crime_housing_building_permit.csv")
@@ -52,8 +24,9 @@ b8_income = read.csv("cc00_tab_B8_personal_income_earnings.csv")
 b13_govt_programs = read.csv("cc00_tab_B13_govt_programs_employment_finances.csv")
 ```
 
-Data preprocessing
-```{r}
+```{r include=FALSE}
+# Data preprocessing
+
 death_rate = b4_vital_stat_health$B4.vst05
 FIPS = b1_population$B1.geo01
 county_name = b1_population$B1.geo09
@@ -118,22 +91,9 @@ X_new_scaled[,i] = scale(X_new_scaled[,i])
 
 ```
 
-Steps to follow for a full regression analysis
-```{r}
-# feature selection first or model validity first?
-#   - feature selection because we want to figure out the model structure
+```{r include=FALSE}
+# Feature selection using stepwise regression (our own implementation, alpha = 0.05)
 
-# model validity, can we use a linear regression model
-#   1. The relationship between the response y and the regressors is linear, at least approximately.
-#   2. The error term ε has zero mean.
-#   3. The error term ε has constant variance σ 2.
-#   4. The errors are uncorrelated.
-#   5. The errors are normally distributed.
-
-```
-
-Feature selection using stepwise regression (our own implementation, alpha = 0.05)
-```{r}
 which.max(abs(cor(X_scaled[-c(2,3,4)]))[-1,1])
 # num_social_security_ben_per_1000_resid most correlative
 summary(lm(data = X_scaled, death_rate ~ num_social_security_ben_per_1000_resid))
@@ -195,12 +155,11 @@ final_model <- lm(data = X_scaled, death_rate ~
              unemploy_rate + 
              per_below_poverty + 
              per_cap_income_as_per_national_average)
-
-summary(final_model)
 ```
 
-Feature selection using stepwise regression (MASS library function)
-```{r}
+```{r include=FALSE}
+# Feature selection using stepwise regression (MASS library function)
+
 # Fit the full model 
 full.model = lm(death_rate ~ num_care_facilities + per_below_poverty + 
                   per_high_grad + per_bachelor_grad + num_violent_crimes +
@@ -209,12 +168,11 @@ full.model = lm(death_rate ~ num_care_facilities + per_below_poverty +
 # Stepwise regression model
 step.model = stepAIC(full.model, direction = "both", 
                       trace = FALSE)
-summary(step.model)
-
 ```
 
-Model validation
-```{r}
+```{r include=FALSE}
+# Model validation
+
 # Assumptions:
 #   1. The relationship between the response y and the regressors is linear, at least approximately.
 #   2. The error term ε has zero mean.
@@ -265,15 +223,11 @@ abline(h=0, col = "red")
 
 mdl_cook = cooks.distance(final_model)
 
-sort(mdl_cook, decreasing = TRUE)
-
-# model validity conclusion: relatively satisfactory, we can use linear regression model.
 ```
 
-Cross validation
-purpose 1: study the stability of coefficients
-purpose 2: prediction performance of the model
-```{r}
+```{r include=FALSE}
+# Cross validation
+
 # model's original RMSE and MAE and coefficients
   rmse(y_hat, X_scaled[,1])
   mae(y_hat, X_scaled[,1])
@@ -315,23 +269,11 @@ for (index_i in index) {
   coef_poverty[index_i] = final_model_80$coefficients[4]
   coef_income[index_i] = final_model_80$coefficients[5]
 }
-
-mean(RMSPE)
-mean(MAPE)
-mean(coef_ss)
-mean(coef_unemploy)
-mean(coef_poverty)
-mean(coef_income)
-
-range(X_scaled_20[,1])
 ```
 
+```{r include=FALSE}
+# Stepwise regression (X_new_scaled)
 
-NEW OBSERVATION ADDED ####################################################################################
-
-
-Stepwise regression
-```{r}
 # Fit full model and stepwise regression on X_new_scaled
 
 full.model.new = lm(death_rate ~ num_care_facilities + per_below_poverty + 
@@ -341,12 +283,11 @@ full.model.new = lm(death_rate ~ num_care_facilities + per_below_poverty +
 
 step.model.new = stepAIC(full.model.new, direction = "both", 
                       trace = FALSE)
-
-summary(step.model.new)
 ```
 
-Feature selection using stepwise regression (our own implementation, alpha = 0.05)
-```{r}
+```{r include=FALSE}
+# Feature selection using stepwise regression (our own implementation, alpha = 0.05) (X_new_scaled)
+
 which.max(abs(cor(X_new_scaled[-c(2,3,4)]))[-1,1])
 # num_social_security_ben_per_1000_resid most correlative
 summary(lm(data = X_new_scaled, death_rate ~ num_social_security_ben_per_1000_resid))
@@ -407,20 +348,20 @@ final_model_new <- lm(data = X_new_scaled, death_rate ~
              num_social_security_ben_per_1000_resid +
              unemploy_rate + 
              per_below_poverty)
-
-summary(final_model_new)
 ```
 
-final model with added observation
-```{r}
+```{r include=FALSE}
+# final model (X_new_scaled)
+
 final_model_new <- lm(data = X_new_scaled, death_rate ~ 
              num_social_security_ben_per_1000_resid +
              unemploy_rate + 
              per_below_poverty)
 ```
 
-Model validation for model with added observation
-```{r}
+```{r include=FALSE}
+# Model validation (X_new_scaled)
+
 summary(final_model_new)
 
 residuals = final_model_new$residuals
@@ -458,41 +399,38 @@ abline(h=0, col = "red")
 # find influential points, result: no data point's D > 1
 
 mdl_cook_new = cooks.distance(final_model_new)
-
-sort(mdl_cook_new, decreasing = TRUE)
 ```
 
-Abstract (150 words or less)
-```{r}
-# Our main purpose is to conduct a thorough regression analysis to analyze if there exist a linear relationship between U.S. death rate and a variety of independent variables.
-# 
-# A special observation (crazytown) is also added to see if it will have any impact on feature selection and if we can detect it during model validation.
-# 
-# At the end of all our analysis, we conclude that:
-# - Crazytown is identifiable during model validity analysis
-# - crazytown does impact feature selection, but only for manual stepwise regression
-# - our final linear regression model satisfies all assumption requirements
-# - within our variables, the most explanatory for U.S. death rate are unemployment rate, poverty level, per capital income, and number of social security beneficiaries per 1000 residents
+Abstract
 
-```
+Our main purpose is to conduct a thorough regression analysis to analyze if there exist a linear relationship between U.S. death rate and a variety of independent variables.
 
-Introduction (must contain a thorough description of the questions of interest)
-```{r}
-# Death has many contributing factors. In this report, we attempt to analyze U.S. death rate through linear regression analysis using U.S. 2000 census data. We also introduce a special observation (crazytown) into the dataset for special analysis purpose. 
-# 
-# Throughout this report, we are trying to answer the following five questions:
-#  - is there a linear relationship between the death rate and some of the independent variables? If so, which variables provide the most explanatory power?
-#  - does our linear regression model satisfy all model assumptions?
-#  - is Crazytown identifiable during model validation?
-#  - does crazydown affect feature selection?
-# 
-# The core structure of our analysis is listed below:
-# 1) download and preprocess data, create separate copy and include crazytown
-# 2) feature selection (manual stepwise regression & stepAIC function) for original dataset and new dataset
-# 3) model validation for both models (original and new dataset)
-# 4) cross validation
+A special observation (crazytown) is also added to see if it will have any impact on feature selection and if we can detect it during model validation.
 
-```
+At the end of all our analysis, we conclude that:
+
+- Crazytown is identifiable during model validity analysis
+- Crazytown does impact feature selection, but only for manual stepwise regression
+- Our final linear regression model satisfies all assumption requirements
+- Within our variables, the most explanatory for U.S. death rate are unemployment rate, poverty level, per capital income, and number of social security beneficiaries per 1000 residents
+
+Introduction
+
+Death has many contributing factors. In this report, we attempt to analyze U.S. death rate through linear regression analysis using U.S. 2000 census data. We also introduce a special observation (Crazytown) into the dataset for special analysis purpose.
+
+Throughout this report, we are trying to answer the following five questions:
+ 
+ - is there a linear relationship between the death rate and some of the independent variables? If so, which variables provide the most explanatory power?
+ - does our linear regression model satisfy all model assumptions?
+ - is Crazytown identifiable during model validation?
+ - does Crazydown affect feature selection?
+
+The core structure of our analysis is listed below:
+
+1) download and preprocess data, create separate copy and include crazytown
+2) feature selection (manual stepwise regression & stepAIC function) for original dataset and new dataset
+3) model validation for both models (original and new dataset)
+4) cross validation
 
 <font size="25"> Data Description </font> 
 
@@ -500,10 +438,10 @@ All our data originates from the U.S. 2000 census. Since the entire census datas
 
 ![Variables description](data description.jpg)
 
-The additional data point we introduce is called "Crazytown". There are two goals for introducing this additional datapoint.
+The additional data point we introduce is called "Crazytown". There are two goals for introducing it.
 
-1) Can our model validation process identify this new datapoint?
-2) Does this new datapoint change our feature selection?
+1) Can our model validation process identify Crazytown?
+2) Does Crazytown affect our feature selection process?
 
 All values of Crazytown are column averages except for death_rate. where the county average is about 10, and we chose Crazytown's death_rate to be 25.
 
@@ -523,8 +461,72 @@ crazytown2
 Data Preprocessing
 
 1) We extract all our variables from appropriate U.S. 2000 cencus data tables into a dataframe (original dataset)
-2) Create another copy of the dataframe and introduce a special datapoint called 'Crazytown' (new dataset)
+2) Create another copy of the dataframe and incldue Crazytown (new dataset)
 3) Unit normal scaling for all appropriate variables 
+
+```{r}
+death_rate = b4_vital_stat_health$B4.vst05
+FIPS = b1_population$B1.geo01
+county_name = b1_population$B1.geo09
+population = b1_population$B1.pop03
+
+num_care_facilities = b4_vital_stat_health$B4.hlt06
+per_below_poverty = b5_education_income_poverty$B5.pov04
+per_high_grad = as.numeric(b5_education_income_poverty$B5.edc06) - as.numeric(b5_education_income_poverty$B5.edc08)
+per_bachelor_grad = b5_education_income_poverty$B5.edc08
+num_violent_crimes = b6_crime_housing$B6.crm02
+num_property_crimes = b6_crime_housing$B6.crm03
+unemploy_rate = b7_labor_employment$B7.clf05
+per_cap_income_as_per_national_average = b8_income$B8.pie06
+num_social_security_ben_per_1000_resid = b13_govt_programs$B13.soc04
+
+X = cbind(death_rate,FIPS,county_name,population,num_care_facilities,per_below_poverty,per_high_grad,per_bachelor_grad,num_violent_crimes,num_property_crimes,unemploy_rate,per_cap_income_as_per_national_average,num_social_security_ben_per_1000_resid)
+
+X = as.data.frame(X)
+
+states = toupper(c("Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Carolina","North Dakota","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia","Wisconsin","Wyoming"))
+
+# delete US row
+X = X[-1,]
+
+#delete State rows
+for (i in states){
+  X = X[!grepl(i,X$county_name),]
+}
+
+# convert columns to numeric
+i = c(1,4,5,6,7,8,9,10,11,12,13)
+
+X[,i] = apply(X[,i], MARGIN = 2, function(x) as.numeric(as.character(x)))
+
+# delete rows with NA values
+X = X[-which(is.na(X), arr.ind = TRUE),]
+
+# introduce our own datapoint (goal, introduce an influential point, see how that affects our model results and analysis)
+interest = X[1,]
+interest[,1] = 25 # death rate (really high, average is 10)
+interest[,2] = 99999 # FIPS number
+interest[,3] = 'crazytown' # county_name
+interest[,4] = 100000 # population (avg)
+interest[,5] = 12 # num_care_facilities (avg)
+interest[,6] = 14.86 # per_below_poverty (avg)
+interest[,7] = 56.14779 # per_high_grad (avg)
+interest[,8] = 13.78 # per_bachelor_grad (avg)
+interest[,9] = 501 # num_violent_crimes (avg)
+interest[,10] = 3516 # num_property_crimes (avg)
+interest[,11] = 4.73 # unemploy_rate (avg)
+interest[,12] = 78 # per_cap_income_as_per_national_average (avg)
+interest[,13] = 193 # num_social_security_ben_per_1000_resid (avg)
+
+X_new = rbind(X,interest) # new dataframe with added observation
+
+# feature scaling (standardize)
+X_scaled = X
+X_scaled[,i] = scale(X_scaled[,i])
+
+X_new_scaled = X_new
+X_new_scaled[,i] = scale(X_new_scaled[,i])
+```
 
 The resulting output from data preprocessing are two dataframes called "X_scaled" and "X_new_scaled". The only difference between the two is that X_new_scaled contains Crazytown.
 
@@ -548,11 +550,9 @@ At this stage, we are trying to assess if our model under X_scaled data satisfy 
 4. The errors are uncorrelated
 5. The errors are normally distributed
 
-Model under X_scaled dataset
-
 To assess the first three assumptions, we plotted student residuals against y_hat and also against all regressors in the model.
 ```{r}
-plot(y_hat, student_r, main = "X_scaled: Student residuals vs Y_hat") # 3rd assumption & 1st assumption & 2nd assumption
+plot(y_hat, student_r, main = "X_scaled: Student residuals vs Y_hat")
 abline(h = 0, col = "red")
 ```
 Looking at the student residuals vs Y_hat graph, we can see the error terms are spread quite evenly around zero. Although there are some errors outside three standard deviations, we have to keep in mind that there are over 2650 observations in total, and the general shape of the graph indicate the model satisfies the first, second, and third assumption. 
@@ -561,16 +561,16 @@ We graph residual errors against each regressor below to further analyze the sec
 ```{r}
 par(mfrow=c(2,2))
 
-plot(X_scaled[,13], student_r, main = "X_scaled: Student residuals vs\n num_social_security_ben_per_1000_resid") # 2nd/3rd
+plot(X_scaled[,13], student_r, main = "X_scaled: Student residuals vs\n num_social_security_ben_per_1000_resid")
 abline(h = 0, col = "red")
 
-plot(X_scaled[,11], student_r, main = "X_scaled: Student residuals vs\n unemploy_rate") # 2nd/3rd
+plot(X_scaled[,11], student_r, main = "X_scaled: Student residuals vs\n unemploy_rate")
 abline(h = 0, col = "red")
 
-plot(X_scaled[,6], student_r, main = "X_scaled: Student residuals vs\n per_below_poverty") # 2nd/3rd
+plot(X_scaled[,6], student_r, main = "X_scaled: Student residuals vs\n per_below_poverty") 
 abline(h = 0, col = "red")
 
-plot(X_scaled[,12], student_r, main = "X_scaled: Student residuals vs\n per_cap_income_as_per_national_avg") # 2nd/3rd
+plot(X_scaled[,12], student_r, main = "X_scaled: Student residuals vs\n per_cap_income_as_per_national_avg")
 abline(h = 0, col = "red")
 ```
 Looking at these four graphs, they match our initial assessment that our model satisfies the second and third assumption. In each graph we can observe errors are spread quite evenly around zero. Once again, there are a few points that are outside three standard deviations, we think this is acceptable due to the large number of observations we have in our dataset. 
@@ -583,7 +583,7 @@ We observe that it is not perfectly diagonal, but relatively close. We conclude 
 
 Next, we plot student residuals aginast index below:
 ```{r}
-plot(student_r, main = "X_scaled: Student residuals vs Index") # 4th assumption
+plot(student_r, main = "X_scaled: Student residuals vs Index")
 abline(h=0, col = "red")
 ```
 Similar to other plots above, we observe the vast majority of errors are spread evenly in a tight band around zero. A few error terms do lie outside three standard deviations. From this graph, we conclude that this model also meets the fourth assumption.
@@ -608,19 +608,19 @@ y_hat_new = predict(final_model_new,X_new_scaled)
 
 layout(matrix(c(1,1,2,2,3,3,4,4), nrow = 2, ncol = 4, byrow = TRUE))
 
-plot(y_hat_new, student_r_new, main = "X_new_scaled: Student residuals vs Y_hat") # 3rd assumption & 1st assumption & 2nd assumption
+plot(y_hat_new, student_r_new, main = "X_new_scaled: Student residuals vs Y_hat")
 abline(h = 0, col = "red")
 text(0,9,"Crazytown", col = "red")
 
-plot(X_new_scaled[,13], student_r_new, main = "X_new_scaled: Student residuals vs\n num_social_security_ben_per_1000_resid") # good
+plot(X_new_scaled[,13], student_r_new, main = "X_new_scaled: Student residuals vs\n num_social_security_ben_per_1000_resid")
 abline(h = 0, col = "red")
 text(0,9,"Crazytown", col = "red")
 
-plot(X_new_scaled[,11], student_r_new, main = "X_new_scaled: Student residuals vs\n unemploy_rate") # good
+plot(X_new_scaled[,11], student_r_new, main = "X_new_scaled: Student residuals vs\n unemploy_rate")
 abline(h = 0, col = "red")
 text(0,9,"Crazytown", col = "red")
 
-plot(X_new_scaled[,6], student_r_new, main = "X_new_scaled: Student residuals vs\n per_below_poverty") # good
+plot(X_new_scaled[,6], student_r_new, main = "X_new_scaled: Student residuals vs\n per_below_poverty")
 abline(h = 0, col = "red")
 text(0,9,"Crazytown", col = "red")
 ```
@@ -636,11 +636,12 @@ plot(y_hat_new, student_r_new, main = "X_new_scaled: Student residuals vs Y_hat"
 abline(h = 0, col = "red")
 text(0,9,"Crazytown", col = "red")
 ```
-Lastly, we conduct cross validation analysis for two purpose:
+Lastly, we conduct cross validation analysis for two purposes:
+
 1) Study the stability of model coefficients
 2) Study the stability of prediction performance of the model
 
-We split our X_scaled dataset into 80% training and 20% validation sets. Then we run 1000 simulations and recorded each run's RMSE, MAE, and model coefficients.
+We split X_scaled dataset into 80% training and 20% validation sets. Then we run 1000 simulations and recorded each run's RMSPE, MAPE, and model coefficients.
 ```{r}
 # model's original RMSE and MAE and coefficients
   rmse_x_scaled = rmse(y_hat, X_scaled[,1])
@@ -684,6 +685,7 @@ for (index_i in index) {
   coef_income[index_i] = final_model_80$coefficients[5]
 }
 ```
+
 Next we plot the histogram for RMSPE, MAPE to visualize the variability of each.
 
 ```{r}
@@ -699,7 +701,7 @@ text(mae_x_scaled,25,"MAE from X_scale full dataset", col = "red")
 ```
 From the above graphs, we can conclude that the variablity for both RMSPE and MAPE are quite small.
 
-Next, we also plot the histogram for model coefficients.
+Next, we also plot the histogram for model coefficients, and observe that all four coefficients' variability are minimal.
 ```{r}
 layout(matrix(c(1,1,2,2,3,3,4,4), nrow = 2, ncol = 4, byrow = TRUE))
   
@@ -720,20 +722,26 @@ points(x = coef_per_cap_income_per_national_avg, y = 1, type = "p", col="red")
 text(coef_per_cap_income_per_national_avg,25,"coefficient from X_scale full dataset", col = "red")
 
 ```
-We observe that from all four graphs, coefficient variability is minimal. 
 
-Results (all figures should be properly labelled and discussed)
-```{r}
+Conclusion
 
-```
+At the beginning of our report, we identified five key questions to address:
+  - is there a linear relationship between the death rate and some of the independent variables? If so, which variables provide the most explanatory power?
+  - does our linear regression model satisfy all model assumptions?
+  - is Crazytown identifiable during model validation?
+  - does crazydown affect feature selection?
+  
+Though our analysis presented above, we conclude that:
+  - There is a reasonable linear relationship between death rate and some of the independent variables; Unemploy_rate, per_below_poverty, per_cap_income_as_per_national_average, and num_social_security_ben_per_1000_resid provided the most explanatory power. R2 is 72%, so our model probably still miss some key variables that weren't included in our original set of independent variables.
+  - Our linear regression model satisfies all five model assumptions
+  - Crazytown was identified during model validation analysis
+  - Crazytown did affect feature selection, but interestingly enough it only affected manual stepwise regression and not stepAIC 
+  
+What we learned:
+  - Extreme outliers can affect feature selection.
+  - If we do find outliers that we need to delete from our dataset, we should go back to feature selection to see if there is any change in features selected. 
+  - Understanding what questions we are trying to answer is very important. It took us a while to figure out what exactly we are trying to analyze. 
+  - Data preprocessing and organization is also very important. There are many components for this report and it was a lot easier to pull everything together when files and codes are organized logically. 
 
-Conclusion (must contain a concise discussion of what has been learned about the application from the analysis)
-```{r}
-
-```
-
-Appendix (must include all data and R Markdown files for reproducibility)
-```{r}
-
-```
+Appendix
 
