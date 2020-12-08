@@ -68,20 +68,62 @@ At this stage, we are trying to assess if our model under X_scaled data satisfy 
 5. The errors are normally distributed
 
 To assess the first three assumptions, we plotted student residuals against y_hat and also against all regressors in the model.
+![](000005.jpg)
+Looking at the student residuals vs Y_hat graph, we can see the error terms are spread quite evenly around zero. Although there are some errors outside three standard deviations, we have to keep in mind that there are over 2650 observations in total, and the general shape of the graph indicate the model satisfies the first, second, and third assumption. 
 
+We graph residual errors against each regressor below to further analyze the second and third assumptions.
+![](000011.jpg)
+Looking at these four graphs, they match our initial assessment that our model satisfies the second and third assumption. In each graph we can observe errors are spread quite evenly around zero. Once again, there are a few points that are outside three standard deviations, we think this is acceptable due to the large number of observations we have in our dataset. 
 
+Next, we plot the QQ norm plot below:
+![](000003.jpg)
+We observe that it is not perfectly diagonal, but relatively close. We conclude that it is satisfactory to meet the 5th assumption. 
 
+Next, we plot student residuals aginast index below:
+![](000006.jpg)
+Similar to other plots above, we observe the vast majority of errors are spread evenly in a tight band around zero. A few error terms do lie outside three standard deviations. From this graph, we conclude that this model also meets the fourth assumption.
 
+Lastly, we calculated Cook's distance for each datapoint. If any datapoint has a value larger than 1, we deem it influential. We find that the largest Cook's distance value is only 0.04. 
 
+At this point, we can conclude that the linear regression model using X_scaled data meets all five model assumptions. Can we identify Crazytown during model validation analysis? To answer this question, we conduct model validation analysis for the model under X_new_scaled dataset since it includes Crazytown.
 
+Again, we plot student residuals against Y_hat, and against each regressor in the model. These graphs are presented below:
+![](000018.jpg)
+From each of these plots, we can clearly identify there is one error that is 10 standard deviations away. This point belongs to Crazytown. To make the comparison more clearly, we plot Student residuals vs Y_hat for both X_scaled and X_new_scaled data below, and we observe the only difference is the error term that belongs to Crazytown:
+![](00000b.jpg)
 
+Lastly, we conduct cross validation analysis for two purposes:
+1) Study the stability of model coefficients
+2) Study the stability of prediction performance of the model
 
+We split X_scaled dataset into 80% training and 20% validation sets. Then we run 1000 simulations and recorded each run's RMSPE, MAPE, and model coefficients. Next we plot the histogram for Root Mean Square Percentage Error (RMSPE), Mean Absolute Percentage Error (MAPE) to visualize the variability of each.
+![](00000d.jpg)
+From the above graphs, we can conclude that the variablity for both RMSPE and MAPE are quite small.
 
+Next, we also plot the histogram for model coefficients, and observe that all four coefficients' variability are minimal.
+![](000019.jpg)
 
-
-
-
-
+# Conclusion
+At the beginning of our report, we identified five key questions to address:
+  - is there a linear relationship between the death rate and some of the independent variables? 
+  - If so, which variables provide the most explanatory power?
+  - does our linear regression model satisfy all model assumptions?
+  - is Crazytown identifiable during model validation?
+  - does crazydown affect feature selection?
+  
+Though our analysis presented above, we conclude that:
+  - There is a reasonable linear relationship between death rate and some of the independent variables; Unemploy_rate, per_below_poverty, per_cap_income_as_per_national_average, and num_social_security_ben_per_1000_resid provided the most explanatory power. R2 is 72%, so our model probably still miss some key variables that weren't included in our original set of independent variables.
+  - Our linear regression model satisfies all five model assumptions
+  - Crazytown was identified during model validation analysis
+  - Crazytown did affect feature selection, but interestingly enough it only affected manual stepwise regression and not stepAIC 
+  
+What we learned:
+  - Extreme outliers can affect feature selection.
+  - If we do find outliers that we need to delete from our dataset, we should go back to feature selection to see if there is any change in features selected. 
+  - Understanding what questions we are trying to answer is very important. It took us a while to figure out what exactly we are trying to analyze. 
+  - Data preprocessing and organization is also very important. There are many components for this report and it was a lot easier to pull everything together when files and codes are organized logically.
+  
+# Appendix
 
 
 
