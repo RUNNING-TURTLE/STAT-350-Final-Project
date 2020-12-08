@@ -1,4 +1,4 @@
-# STAT 350 Final Project
+# STAT 350 Final Project: Linear Regression Analysis on U.S. Death Rate
 Authors: Leo Chen & Tianxing Yan
 
 ## Abstract 
