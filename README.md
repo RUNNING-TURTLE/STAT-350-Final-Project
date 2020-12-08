@@ -154,6 +154,11 @@ All our raw data can be found at: [website](https://webapp1.dlib.indiana.edu/vir
 
 All our code can be found at: [RMD file](STAT%20350%20Final%20Project%20-%20Yan%20&%20Leo.Rmd). 
 
+Other images: 
+- [Data Description](Image/data%20description.jpg)
+- [Feature Selection](Image/feature%20selection.jpg)
+- [Final Model](Image/final%20model.jpg)
+
 
 
 
