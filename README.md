@@ -32,7 +32,7 @@ The additional data point we introduce is called "Crazytown". There are two goal
 
 All values of Crazytown are column averages except for death_rate. where the county average is about 10, and we chose Crazytown's death_rate to be 25. All values for Crazytown are shown below:
 
-| | Country average | Crazytown |
+| | County average | Crazytown |
 | --- | --- | --- |
 | death_rate | 10.16246 | 25.00000 |
 | population | 99779.15 | 100000.00	|
