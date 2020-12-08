@@ -130,7 +130,15 @@ What we learned:
   - Data preprocessing and organization is also very important. There are many components for this report and it was a lot easier to pull everything together when files and codes are organized logically.
   
 # Appendix
-[here](Source%20data/cc00_tab_B13_govt_programs_employment_finances.csv)
+Data below are published on this ![website](https://webapp1.dlib.indiana.edu/virtual_disk_library/index.cgi/4191241/FID1524)
+- [death rate](Source%20data/cc00_tab_B4_vital_statistics_and_health.csv)
+- [num_social_security_ben_per_1000_resid](Source%20data/cc00_tab_B13_govt_programs_employment_finances.csv)
+- [population](Source%20data/cc00_tab_B1_area_population.csv)
+- [per_below_poverty | per_high_grad | per_bacherlor_grad](Source%20data/cc00_tab_B5_education_income_poverty.csv)
+- [num_violent_crimes](Source%20data/cc00_tab_B6_crime_housing_building_permit.csv)
+- [unemploy_rate](Source%20data/cc00_tab_B7_labor_force_employment.csv)
+- [per_cap_income_as_per_national_average](Source%20data/cc00_tab_B8_personal_income_earnings.csv)
+
 
 
 
